@@ -26,21 +26,46 @@ function App() {
 				element={isAuthenticated ? <Navigate to='/' replace /> : <Register />}
 			/>
 
-			<Route
-				path='/'
-				element={
-					<ProtectedRoute>
-						<Layout />
-					</ProtectedRoute>
-				}
-			>
-				<Route index element={<Dashboard />} />
-				<Route path='quizzes/create' element={<CreateQuiz />} />
-				<Route path='quizzes/my-quizzes' element={<MyQuizzes />} />
+			{/* Public routes with Layout */}
+			<Route path='/' element={<Layout />}>
+				{/* Public quiz and result viewing */}
 				<Route path='quizzes/public' element={<PublicQuizzes />} />
 				<Route path='quizzes/:quizId' element={<QuizDetail />} />
-				<Route path='attempt/:attemptId' element={<TakeQuiz />} />
 				<Route path='results/:resultId' element={<QuizResults />} />
+
+				{/* Protected routes */}
+				<Route
+					index
+					element={
+						<ProtectedRoute>
+							<Dashboard />
+						</ProtectedRoute>
+					}
+				/>
+				<Route
+					path='quizzes/create'
+					element={
+						<ProtectedRoute>
+							<CreateQuiz />
+						</ProtectedRoute>
+					}
+				/>
+				<Route
+					path='quizzes/my-quizzes'
+					element={
+						<ProtectedRoute>
+							<MyQuizzes />
+						</ProtectedRoute>
+					}
+				/>
+				<Route
+					path='attempt/:attemptId'
+					element={
+						<ProtectedRoute>
+							<TakeQuiz />
+						</ProtectedRoute>
+					}
+				/>
 			</Route>
 
 			<Route path='*' element={<Navigate to='/' replace />} />

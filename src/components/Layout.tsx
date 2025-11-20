@@ -8,11 +8,11 @@ import { useLogout } from '../hooks/useAuth';
 import { Menu } from 'lucide-react';
 
 export function Layout() {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const logout = useLogout();
   const [open, setOpen] = useState(false);
 
-  const navigationLinks = (
+  const authenticatedLinks = (
     <>
       <Link 
         to="/" 
@@ -35,14 +35,17 @@ export function Layout() {
       >
         My Quizzes
       </Link>
-      <Link 
-        to="/quizzes/public" 
-        className="text-muted-foreground hover:text-foreground"
-        onClick={() => setOpen(false)}
-      >
-        Browse Quizzes
-      </Link>
     </>
+  );
+
+  const publicLinks = (
+    <Link 
+      to="/quizzes/public" 
+      className="text-muted-foreground hover:text-foreground"
+      onClick={() => setOpen(false)}
+    >
+      Browse Quizzes
+    </Link>
   );
 
   return (
@@ -56,13 +59,31 @@ export function Layout() {
             
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-4">
-              {navigationLinks}
+              {isAuthenticated && authenticatedLinks}
+              {publicLinks}
               <div className="flex items-center gap-2 ml-4 pl-4 border-l">
                 <ThemeToggle />
-                <span className="text-sm text-muted-foreground">{user?.username}</span>
-                <Button onClick={logout} variant="outline" size="sm">
-                  Logout
-                </Button>
+                {isAuthenticated ? (
+                  <>
+                    <span className="text-sm text-muted-foreground">{user?.username}</span>
+                    <Button onClick={logout} variant="outline" size="sm">
+                      Logout
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/login">
+                      <Button variant="outline" size="sm">
+                        Login
+                      </Button>
+                    </Link>
+                    <Link to="/register">
+                      <Button size="sm">
+                        Sign Up
+                      </Button>
+                    </Link>
+                  </>
+                )}
               </div>
             </nav>
 
@@ -78,22 +99,40 @@ export function Layout() {
                 <SheetContent side="right">
                   <div className="flex flex-col gap-6 mt-8">
                     <div className="flex flex-col gap-4">
-                      {navigationLinks}
+                      {isAuthenticated && authenticatedLinks}
+                      {publicLinks}
                     </div>
                     <div className="flex flex-col gap-2 pt-4 border-t">
-                      <span className="text-sm text-muted-foreground">
-                        Logged in as {user?.username}
-                      </span>
-                      <Button 
-                        onClick={() => {
-                          logout();
-                          setOpen(false);
-                        }} 
-                        variant="outline"
-                        className="w-full"
-                      >
-                        Logout
-                      </Button>
+                      {isAuthenticated ? (
+                        <>
+                          <span className="text-sm text-muted-foreground">
+                            Logged in as {user?.username}
+                          </span>
+                          <Button 
+                            onClick={() => {
+                              logout();
+                              setOpen(false);
+                            }} 
+                            variant="outline"
+                            className="w-full"
+                          >
+                            Logout
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Link to="/login" onClick={() => setOpen(false)}>
+                            <Button variant="outline" className="w-full">
+                              Login
+                            </Button>
+                          </Link>
+                          <Link to="/register" onClick={() => setOpen(false)}>
+                            <Button className="w-full">
+                              Sign Up
+                            </Button>
+                          </Link>
+                        </>
+                      )}
                     </div>
                   </div>
                 </SheetContent>

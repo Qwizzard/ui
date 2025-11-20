@@ -2,14 +2,32 @@ import { useParams, Link } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
-import { useResult } from '../hooks/useResult';
+import { useResult, useToggleResultVisibility } from '../hooks/useResult';
 import { Skeleton } from '../components/ui/skeleton';
-import { CheckCircle2, XCircle } from 'lucide-react';
+import { CheckCircle2, XCircle, Globe, Lock, Share2 } from 'lucide-react';
 import type { ResultAnswer } from '../types';
+import { useAuth } from '../contexts/AuthContext';
+import { toast } from 'sonner';
 
 export function QuizResults() {
   const { resultId } = useParams<{ resultId: string }>();
   const { data: result, isLoading } = useResult(resultId!);
+  const { user } = useAuth();
+  const { mutate: toggleVisibility, isPending: isTogglingVisibility } = useToggleResultVisibility();
+
+  const isOwner = result && user && String(result.userId) === String(user.id);
+
+  const handleToggleVisibility = () => {
+    if (resultId) {
+      toggleVisibility(resultId);
+    }
+  };
+
+  const handleShareResult = () => {
+    const shareUrl = `${window.location.origin}/results/${resultId}`;
+    navigator.clipboard.writeText(shareUrl);
+    toast.success('Result link copied to clipboard!');
+  };
 
   if (isLoading) {
     return (
@@ -52,16 +70,60 @@ export function QuizResults() {
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Quiz Results</h1>
-        <Link to="/">
-          <Button variant="outline">Back to Dashboard</Button>
-        </Link>
+        <div className="flex gap-2">
+          {/* Show share button for everyone if result is public */}
+          {result.isResultPublic && (
+            <Button
+              variant="outline"
+              size="default"
+              onClick={handleShareResult}
+            >
+              <Share2 className="mr-2 h-4 w-4" />
+              Share
+            </Button>
+          )}
+          {/* Only show visibility toggle for owners */}
+          {isOwner && (
+            <Button
+              variant="outline"
+              size="default"
+              onClick={handleToggleVisibility}
+              disabled={isTogglingVisibility}
+            >
+              {result.isResultPublic ? (
+                <>
+                  <Globe className="mr-2 h-4 w-4" />
+                  Make Private
+                </>
+              ) : (
+                <>
+                  <Lock className="mr-2 h-4 w-4" />
+                  Make Public
+                </>
+              )}
+            </Button>
+          )}
+          {user && (
+            <Link to="/">
+              <Button variant="outline">Back to Dashboard</Button>
+            </Link>
+          )}
+        </div>
       </div>
 
       <Card>
         <CardHeader>
           <div className="flex items-start justify-between">
-            <div>
-              <CardTitle className="text-2xl">{result.quizTopic}</CardTitle>
+            <div className="flex-1">
+              <div className="flex items-center gap-2">
+                <CardTitle className="text-2xl">{result.quizTopic}</CardTitle>
+                {!isOwner && result.isResultPublic && (
+                  <Badge variant="secondary" className="text-xs">
+                    <Globe className="mr-1 h-3 w-3" />
+                    Public Result
+                  </Badge>
+                )}
+              </div>
               <p className="text-sm text-muted-foreground mt-1 capitalize">
                 {result.quizDifficulty} difficulty •{' '}
                 {new Date(result.completedAt).toLocaleDateString()}

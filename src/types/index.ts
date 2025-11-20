@@ -35,6 +35,8 @@ export interface Result {
   percentage: number;
   completedAt: string;
   answers: ResultAnswer[];
+  isResultPublic: boolean;
+  userId?: string;
 }
 
 export interface ResultAnswer {

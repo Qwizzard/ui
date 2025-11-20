@@ -1,38 +1,43 @@
-import axios from 'axios';
+import axios from 'axios'
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
+	baseURL: import.meta.env.VITE_API_BASE_URL,
+	headers: {
+		'Content-Type': 'application/json',
+	},
+})
 
 // Request interceptor to add auth token
 axiosInstance.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+	(config) => {
+		const token = localStorage.getItem('token')
+		if (token) {
+			config.headers.Authorization = `Bearer ${token}`
+		}
+		return config
+	},
+	(error) => {
+		return Promise.reject(error)
+	}
+)
 
 // Response interceptor for error handling
 axiosInstance.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location.href = '/login';
-    }
-    return Promise.reject(error);
-  }
-);
+	(response) => response,
+	(error) => {
+		// Only redirect to login for 401 errors if user was actually logged in
+		// This prevents redirects when viewing public content
+		if (error.response?.status === 401) {
+			const token = localStorage.getItem('token')
+			if (token) {
+				// User had a token but it's invalid/expired
+				localStorage.removeItem('token')
+				localStorage.removeItem('user')
+				window.location.href = '/login'
+			}
+		}
+		return Promise.reject(error)
+	}
+)
 
-export default axiosInstance;
-
+export default axiosInstance
