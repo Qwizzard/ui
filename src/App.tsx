@@ -7,6 +7,7 @@ import { MyQuizzes } from './pages/MyQuizzes'
 import { PublicQuizzes } from './pages/PublicQuizzes'
 import { TakeQuiz } from './pages/TakeQuiz'
 import { QuizResults } from './pages/QuizResults'
+import { QuizDetail } from './pages/QuizDetail'
 import { Layout } from './components/Layout'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { useAuth } from './contexts/AuthContext'
@@ -37,6 +38,7 @@ function App() {
 				<Route path='quizzes/create' element={<CreateQuiz />} />
 				<Route path='quizzes/my-quizzes' element={<MyQuizzes />} />
 				<Route path='quizzes/public' element={<PublicQuizzes />} />
+				<Route path='quizzes/:quizId' element={<QuizDetail />} />
 				<Route path='attempt/:attemptId' element={<TakeQuiz />} />
 				<Route path='results/:resultId' element={<QuizResults />} />
 			</Route>

@@ -20,10 +20,32 @@ export function TakeQuiz() {
 
 	const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
 	const [selectedAnswers, setSelectedAnswers] = useState<number[]>([])
+	const [hasInitialized, setHasInitialized] = useState(false)
 
 	const quiz = attempt?.quizId
 	const questions = quiz?.questions || []
 	const currentQuestion = questions[currentQuestionIndex]
+
+	// Initialize to first unanswered question when attempt loads
+	useEffect(() => {
+		if (attempt && questions.length > 0 && !hasInitialized) {
+			// Find the first unanswered question
+			const answeredIndices = new Set(
+				attempt.answers?.map((a: { questionIndex: number }) => a.questionIndex) || []
+			)
+			
+			let firstUnanswered = 0
+			for (let i = 0; i < questions.length; i++) {
+				if (!answeredIndices.has(i)) {
+					firstUnanswered = i
+					break
+				}
+			}
+			
+			setCurrentQuestionIndex(firstUnanswered)
+			setHasInitialized(true)
+		}
+	}, [attempt, questions.length, hasInitialized])
 
 	// Load saved answer when navigating between questions
 	useEffect(() => {

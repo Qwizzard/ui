@@ -12,7 +12,7 @@ export function useStartAttempt() {
       return response.data;
     },
     onSuccess: (data) => {
-      navigate(`/attempt/${data._id}`);
+      navigate(`/attempt/${data.slug}`);
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message || 'Failed to start attempt');
@@ -69,7 +69,7 @@ export function useSubmitAttempt() {
     },
     onSuccess: (data) => {
       toast.success('Quiz submitted successfully!');
-      navigate(`/results/${data._id}`);
+      navigate(`/results/${data.slug}`);
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message || 'Failed to submit quiz');
@@ -84,6 +84,18 @@ export function useMyAttempts() {
       const response = await axios.get('/attempts/my-attempts');
       return response.data;
     },
+  });
+}
+
+export function useQuizAttemptStatus(quizId: string | undefined) {
+  return useQuery({
+    queryKey: ['quiz-attempt-status', quizId],
+    queryFn: async () => {
+      if (!quizId) return null;
+      const response = await axios.get(`/attempts/quiz/${quizId}/status`);
+      return response.data;
+    },
+    enabled: !!quizId,
   });
 }
 
