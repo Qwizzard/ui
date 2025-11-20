@@ -24,7 +24,7 @@ export interface Question {
 
 export interface Result {
   _id: string;
-  slug?: string;
+  slug: string;
   quizId?: {
     topic: string;
   };

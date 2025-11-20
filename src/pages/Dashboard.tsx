@@ -109,7 +109,7 @@ export function Dashboard() {
                 {results.slice(0, 5).map((result: Result) => (
                   <Link
                     key={result._id}
-                    to={`/results/${result._id}`}
+                    to={`/results/${result.slug}`}
                     className="block"
                   >
                     <div className="flex items-center justify-between p-3 rounded-lg border hover:bg-accent">
@@ -157,7 +157,7 @@ export function Dashboard() {
               {quizzes.slice(0, 5).map((quiz: Quiz) => (
                 <Link
                   key={quiz._id}
-                  to={`/quizzes/${quiz._id}`}
+                  to={`/quizzes/${quiz.slug}`}
                   className="block"
                 >
                   <div className="flex items-center justify-between p-3 rounded-lg border hover:bg-accent">
