@@ -5,6 +5,7 @@ import { Badge } from '../components/ui/badge';
 import { useResult } from '../hooks/useResult';
 import { Skeleton } from '../components/ui/skeleton';
 import { CheckCircle2, XCircle } from 'lucide-react';
+import type { ResultAnswer } from '../types';
 
 export function QuizResults() {
   const { resultId } = useParams<{ resultId: string }>();
@@ -91,7 +92,7 @@ export function QuizResults() {
 
       <div className="space-y-4">
         <h2 className="text-xl font-bold">Detailed Breakdown</h2>
-        {result.answers.map((answer: any, index: number) => (
+        {result.answers.map((answer: ResultAnswer, index: number) => (
           <Card
             key={index}
             className={

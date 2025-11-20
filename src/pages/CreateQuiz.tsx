@@ -40,6 +40,7 @@ export function CreateQuiz() {
     },
   });
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const selectedQuestionTypes = watch('questionTypes') || [];
 
   const onSubmit = (data: CreateQuizFormData) => {

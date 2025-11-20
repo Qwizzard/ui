@@ -5,8 +5,9 @@ import { Badge } from '../components/ui/badge';
 import { useMyQuizzes, useDeleteQuiz, useToggleQuizVisibility } from '../hooks/useQuiz';
 import { useStartAttempt, useQuizAttemptStatus } from '../hooks/useAttempt';
 import { Skeleton } from '../components/ui/skeleton';
+import type { Quiz } from '../types';
 
-function MyQuizCard({ quiz }: { quiz: any }) {
+function MyQuizCard({ quiz }: { quiz: Quiz }) {
   const { mutate: deleteQuiz } = useDeleteQuiz();
   const { mutate: toggleVisibility } = useToggleQuizVisibility();
   const { mutate: startAttempt, isPending } = useStartAttempt();
@@ -125,7 +126,7 @@ export function MyQuizzes() {
         </Card>
       ) : (
         <div className="grid gap-4">
-          {quizzes.map((quiz: any) => (
+          {quizzes.map((quiz: Quiz) => (
             <MyQuizCard key={quiz.slug} quiz={quiz} />
           ))}
         </div>

@@ -1,7 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import axios from '../lib/axios';
+import { AxiosError } from 'axios';
 import { toast } from 'sonner';
+
+interface ErrorResponse {
+  message?: string;
+}
 
 export function useStartAttempt() {
   const navigate = useNavigate();
@@ -14,8 +19,9 @@ export function useStartAttempt() {
     onSuccess: (data) => {
       navigate(`/attempt/${data.slug}`);
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Failed to start attempt');
+    onError: (error: unknown) => {
+      const axiosError = error as AxiosError<ErrorResponse>;
+      toast.error(axiosError.response?.data?.message || 'Failed to start attempt');
     },
   });
 }
@@ -53,8 +59,9 @@ export function useSubmitAnswer() {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['attempt', variables.attemptId] });
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Failed to save answer');
+    onError: (error: unknown) => {
+      const axiosError = error as AxiosError<ErrorResponse>;
+      toast.error(axiosError.response?.data?.message || 'Failed to save answer');
     },
   });
 }
@@ -71,8 +78,9 @@ export function useSubmitAttempt() {
       toast.success('Quiz submitted successfully!');
       navigate(`/results/${data.slug}`);
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Failed to submit quiz');
+    onError: (error: unknown) => {
+      const axiosError = error as AxiosError<ErrorResponse>;
+      toast.error(axiosError.response?.data?.message || 'Failed to submit quiz');
     },
   });
 }

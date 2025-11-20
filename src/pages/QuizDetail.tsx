@@ -18,6 +18,7 @@ import {
 import { useQuiz, useDeleteQuiz, useToggleQuizVisibility } from '../hooks/useQuiz';
 import { useStartAttempt, useQuizAttemptStatus } from '../hooks/useAttempt';
 import { ArrowLeft, CheckCircle2, XCircle, Globe, Lock } from 'lucide-react';
+import type { Question } from '../types';
 
 export function QuizDetail() {
   const { quizId } = useParams<{ quizId: string }>();
@@ -211,7 +212,7 @@ export function QuizDetail() {
         </CardHeader>
         <CardContent>
           <Accordion type="single" collapsible className="w-full">
-            {quiz.questions?.map((question: any, index: number) => (
+            {quiz.questions?.map((question: Question, index: number) => (
               <AccordionItem key={index} value={`question-${index}`}>
                 <AccordionTrigger className="text-left hover:no-underline">
                   <div className="flex items-start gap-3 flex-1">

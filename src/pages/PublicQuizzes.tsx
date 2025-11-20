@@ -8,8 +8,9 @@ import { usePublicQuizzes } from '../hooks/useQuiz';
 import { useStartAttempt, useQuizAttemptStatus } from '../hooks/useAttempt';
 import { Skeleton } from '../components/ui/skeleton';
 import { Search } from 'lucide-react';
+import type { Quiz } from '../types';
 
-function QuizCard({ quiz }: { quiz: any }) {
+function QuizCard({ quiz }: { quiz: Quiz }) {
   const { mutate: startAttempt, isPending } = useStartAttempt();
   const { data: attemptStatus } = useQuizAttemptStatus(quiz.slug);
   const navigate = useNavigate();
@@ -75,7 +76,7 @@ export function PublicQuizzes() {
     if (!searchQuery.trim()) return quizzes;
 
     const query = searchQuery.toLowerCase().trim();
-    return quizzes.filter((quiz: any) => {
+    return quizzes.filter((quiz: Quiz) => {
       const topic = quiz.topic?.toLowerCase() || '';
       const difficulty = quiz.difficulty?.toLowerCase() || '';
       const username = quiz.creatorId?.username?.toLowerCase() || '';
@@ -130,7 +131,7 @@ export function PublicQuizzes() {
         </Card>
       ) : (
         <div className="grid gap-4">
-          {filteredQuizzes.map((quiz: any) => (
+          {filteredQuizzes.map((quiz: Quiz) => (
             <QuizCard key={quiz.slug} quiz={quiz} />
           ))}
         </div>

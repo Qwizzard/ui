@@ -1,8 +1,13 @@
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import axios from '../lib/axios';
+import { AxiosError } from 'axios';
 import { useAuth as useAuthContext } from '../contexts/AuthContext';
 import { toast } from 'sonner';
+
+interface ErrorResponse {
+  message?: string;
+}
 
 interface LoginData {
   email: string;
@@ -38,8 +43,9 @@ export function useLogin() {
       toast.success('Login successful!');
       navigate('/');
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Login failed');
+    onError: (error: unknown) => {
+      const axiosError = error as AxiosError<ErrorResponse>;
+      toast.error(axiosError.response?.data?.message || 'Login failed');
     },
   });
 }
@@ -58,8 +64,9 @@ export function useRegister() {
       toast.success('Registration successful!');
       navigate('/');
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Registration failed');
+    onError: (error: unknown) => {
+      const axiosError = error as AxiosError<ErrorResponse>;
+      toast.error(axiosError.response?.data?.message || 'Registration failed');
     },
   });
 }

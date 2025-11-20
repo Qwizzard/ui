@@ -1,7 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import axios from '../lib/axios';
+import { AxiosError } from 'axios';
 import { toast } from 'sonner';
+
+interface ErrorResponse {
+  message?: string;
+}
 
 interface GenerateQuizData {
   topic: string;
@@ -24,8 +29,9 @@ export function useGenerateQuiz() {
       toast.success('Quiz generated successfully!');
       navigate('/quizzes/my-quizzes');
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Failed to generate quiz');
+    onError: (error: unknown) => {
+      const axiosError = error as AxiosError<ErrorResponse>;
+      toast.error(axiosError.response?.data?.message || 'Failed to generate quiz');
     },
   });
 }
@@ -72,8 +78,9 @@ export function useDeleteQuiz() {
       queryClient.invalidateQueries({ queryKey: ['my-quizzes'] });
       toast.success('Quiz deleted successfully');
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Failed to delete quiz');
+    onError: (error: unknown) => {
+      const axiosError = error as AxiosError<ErrorResponse>;
+      toast.error(axiosError.response?.data?.message || 'Failed to delete quiz');
     },
   });
 }
@@ -91,8 +98,9 @@ export function useToggleQuizVisibility() {
       queryClient.invalidateQueries({ queryKey: ['public-quizzes'] });
       toast.success('Quiz visibility updated');
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Failed to update visibility');
+    onError: (error: unknown) => {
+      const axiosError = error as AxiosError<ErrorResponse>;
+      toast.error(axiosError.response?.data?.message || 'Failed to update visibility');
     },
   });
 }

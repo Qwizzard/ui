@@ -6,6 +6,7 @@ import { useMyQuizzes } from '../hooks/useQuiz';
 import { useMyResults } from '../hooks/useResult';
 import { Skeleton } from '../components/ui/skeleton';
 import { PlusCircle, BookOpen, Trophy } from 'lucide-react';
+import type { Quiz, Result } from '../types';
 
 export function Dashboard() {
   const { data: quizzes, isLoading: quizzesLoading } = useMyQuizzes();
@@ -16,7 +17,7 @@ export function Dashboard() {
     totalAttempts: results?.length || 0,
     averageScore:
       results && results.length > 0
-        ? (results.reduce((acc: number, r: any) => acc + r.percentage, 0) / results.length).toFixed(1)
+        ? (results.reduce((acc: number, r: Result) => acc + r.percentage, 0) / results.length).toFixed(1)
         : 0,
   };
 
@@ -105,7 +106,7 @@ export function Dashboard() {
               </p>
             ) : (
               <div className="space-y-3">
-                {results.slice(0, 5).map((result: any) => (
+                {results.slice(0, 5).map((result: Result) => (
                   <Link
                     key={result._id}
                     to={`/results/${result._id}`}
@@ -153,7 +154,7 @@ export function Dashboard() {
             </div>
           ) : (
             <div className="space-y-3">
-              {quizzes.slice(0, 5).map((quiz: any) => (
+              {quizzes.slice(0, 5).map((quiz: Quiz) => (
                 <Link
                   key={quiz._id}
                   to={`/quizzes/${quiz._id}`}
