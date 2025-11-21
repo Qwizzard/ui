@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { Login } from './pages/Login'
 import { Register } from './pages/Register'
+import { AuthCallback } from './pages/AuthCallback'
 import { Dashboard } from './pages/Dashboard'
 import { CreateQuiz } from './pages/CreateQuiz'
 import { MyQuizzes } from './pages/MyQuizzes'
@@ -25,6 +26,7 @@ function App() {
 				path='/register'
 				element={isAuthenticated ? <Navigate to='/' replace /> : <Register />}
 			/>
+			<Route path='/auth/callback' element={<AuthCallback />} />
 
 			{/* Public routes with Layout */}
 			<Route path='/' element={<Layout />}>
