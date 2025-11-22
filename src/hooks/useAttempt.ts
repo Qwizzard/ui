@@ -71,14 +71,18 @@ export function useSubmitAttempt() {
 
   return useMutation({
     mutationFn: async (attemptId: string) => {
+      console.log('Submitting attempt:', attemptId);
       const response = await axios.post(`/attempts/${attemptId}/submit`);
+      console.log('Submit response:', response.data);
       return response.data;
     },
     onSuccess: (data) => {
+      console.log('Submit successful, navigating to results:', data.slug);
       toast.success('Quiz submitted successfully!');
       navigate(`/results/${data.slug}`);
     },
     onError: (error: unknown) => {
+      console.error('Submit error:', error);
       const axiosError = error as AxiosError<ErrorResponse>;
       toast.error(axiosError.response?.data?.message || 'Failed to submit quiz');
     },

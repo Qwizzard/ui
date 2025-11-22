@@ -6,6 +6,16 @@ import { Badge } from '../components/ui/badge'
 import { Progress } from '../components/ui/progress'
 import { Checkbox } from '../components/ui/checkbox'
 import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from '../components/ui/alert-dialog'
+import {
 	useAttempt,
 	useSubmitAnswer,
 	useSubmitAttempt,
@@ -21,6 +31,7 @@ export function TakeQuiz() {
 	const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
 	const [selectedAnswers, setSelectedAnswers] = useState<number[]>([])
 	const [hasInitialized, setHasInitialized] = useState(false)
+	const [showSubmitDialog, setShowSubmitDialog] = useState(false)
 
 	const quiz = attempt?.quizId
 	const questions = quiz?.questions || []
@@ -97,30 +108,32 @@ export function TakeQuiz() {
 		}
 	}
 
-	const handleSubmitQuiz = () => {
-		if (
-			confirm(
-				'Are you sure you want to submit the quiz? This cannot be undone.'
-			)
-		) {
-			// Save current answer if any
-			if (selectedAnswers.length > 0) {
-				submitAnswer(
-					{
-						attemptId: attemptId!,
-						questionIndex: currentQuestionIndex,
-						selectedAnswers,
+	const handleSubmitQuiz = async () => {
+		// Save current answer if any before submitting
+		if (selectedAnswers.length > 0) {
+			submitAnswer(
+				{
+					attemptId: attemptId!,
+					questionIndex: currentQuestionIndex,
+					selectedAnswers,
+				},
+				{
+					onSuccess: () => {
+						// Submit attempt after answer is saved
+						submitAttempt(attemptId!)
 					},
-					{
-						onSuccess: () => {
-							submitAttempt(attemptId!)
-						},
-					}
-				)
-			} else {
-				submitAttempt(attemptId!)
-			}
+					onError: (error) => {
+						console.error('Failed to save final answer:', error)
+						// Still try to submit the attempt
+						submitAttempt(attemptId!)
+					},
+				}
+			)
+		} else {
+			// No answer selected for current question, submit directly
+			submitAttempt(attemptId!)
 		}
+		setShowSubmitDialog(false)
 	}
 
 	if (isLoading) {
@@ -153,7 +166,18 @@ export function TakeQuiz() {
 	}
 
 	const progress = ((currentQuestionIndex + 1) / questions.length) * 100
-	const answeredCount = attempt?.answers?.length || 0
+	
+	// Calculate actual answered count including current answer if selected
+	const actualAnsweredCount = (() => {
+		const savedAnswers = new Set(
+			attempt?.answers?.map((a: { questionIndex: number }) => a.questionIndex) || []
+		)
+		// If current question has a selected answer, count it too
+		if (selectedAnswers.length > 0) {
+			savedAnswers.add(currentQuestionIndex)
+		}
+		return savedAnswers.size
+	})()
 
 	return (
 		<div className='max-w-3xl mx-auto space-y-6'>
@@ -170,7 +194,7 @@ export function TakeQuiz() {
 						Question {currentQuestionIndex + 1} of {questions.length}
 					</span>
 					<span>
-						Answered: {answeredCount}/{questions.length}
+						Answered: {actualAnsweredCount}/{questions.length}
 					</span>
 				</div>
 				<Progress value={progress} />
@@ -224,12 +248,40 @@ export function TakeQuiz() {
 					{currentQuestionIndex < questions.length - 1 ? (
 						<Button onClick={handleSaveAndNext}>Save & Next</Button>
 					) : (
-						<Button onClick={handleSubmitQuiz} disabled={isSubmitting}>
+						<Button 
+							onClick={() => setShowSubmitDialog(true)} 
+							disabled={isSubmitting}
+						>
 							{isSubmitting ? 'Submitting...' : 'Submit Quiz'}
 						</Button>
 					)}
 				</div>
 			</div>
+
+			<AlertDialog open={showSubmitDialog} onOpenChange={setShowSubmitDialog}>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>Submit Quiz?</AlertDialogTitle>
+						<AlertDialogDescription>
+							Are you sure you want to submit the quiz? This action cannot be undone.
+							{actualAnsweredCount < questions.length && (
+								<span className='block mt-2 text-orange-600 dark:text-orange-400 font-medium'>
+									⚠️ You have only answered {actualAnsweredCount} out of {questions.length} questions.
+								</span>
+							)}
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel>Cancel</AlertDialogCancel>
+						<AlertDialogAction 
+							onClick={handleSubmitQuiz}
+							disabled={isSubmitting}
+						>
+							{isSubmitting ? 'Submitting...' : 'Submit Quiz'}
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
 		</div>
 	)
 }
