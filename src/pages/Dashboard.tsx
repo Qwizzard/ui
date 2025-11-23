@@ -53,26 +53,26 @@ export function Dashboard() {
 	return (
 		<div className='space-y-8 pb-12'>
 			{/* Welcome Header */}
-			<div className='relative overflow-hidden rounded-2xl bg-linear-to-r from-primary/10 via-secondary/10 to-primary/10 p-8 md:p-12'>
+			<div className='relative overflow-hidden rounded-2xl bg-linear-to-r from-primary/10 via-secondary/10 to-primary/10 p-6 sm:p-8 md:p-12'>
 				<div className='absolute inset-0 bg-grid-pattern opacity-5' />
 
 				<div className='relative z-10'>
-					<div className='flex flex-col md:flex-row items-start md:items-center justify-between gap-6'>
-						<div className='flex-1'>
-							<div className='flex items-center gap-3 mb-4'>
-								<Sparkles className='h-6 w-6 text-primary animate-pulse' />
-								<span className='text-sm font-medium text-primary'>
+					<div className='flex flex-col md:flex-row items-center md:items-center justify-between gap-4 md:gap-6'>
+						<div className='flex-1 text-center md:text-left'>
+							<div className='flex items-center justify-center md:justify-start gap-3 mb-3'>
+								<Sparkles className='h-5 w-5 md:h-6 md:w-6 text-primary animate-pulse' />
+								<span className='text-xs md:text-sm font-medium text-primary'>
 									Welcome Back
 								</span>
 							</div>
-							<h1 className='text-4xl md:text-5xl font-bold mb-2'>
+							<h1 className='text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2'>
 								{getGreeting()}, {user?.username}!
 							</h1>
-							<p className='text-xl text-muted-foreground max-w-2xl'>
+							<p className='text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto md:mx-0'>
 								Ready to continue your learning journey? Let's make today count!
 							</p>
 						</div>
-						<div className='w-32 h-32 md:w-40 md:h-40 shrink-0'>
+						<div className='hidden md:block w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-64 lg:h-64 shrink-0'>
 							<LottieAnimation
 								animationType='welcome'
 								className='w-full h-full'
@@ -91,7 +91,7 @@ export function Dashboard() {
 							<CardTitle className='text-sm font-medium'>
 								Quizzes Created
 							</CardTitle>
-							<div className='w-12 h-12'>
+							<div className='w-16 h-16 sm:w-20 sm:h-20'>
 								<LottieAnimation
 									animationType='books'
 									className='w-full h-full'
@@ -123,7 +123,7 @@ export function Dashboard() {
 							<CardTitle className='text-sm font-medium'>
 								Quizzes Attempted
 							</CardTitle>
-							<div className='w-12 h-12'>
+							<div className='w-16 h-16 sm:w-20 sm:h-20'>
 								<LottieAnimation
 									animationType='brain'
 									className='w-full h-full'
@@ -155,7 +155,7 @@ export function Dashboard() {
 							<CardTitle className='text-sm font-medium'>
 								Average Score
 							</CardTitle>
-							<div className='w-12 h-12'>
+							<div className='w-16 h-16 sm:w-20 sm:h-20'>
 								<LottieAnimation
 									animationType='trophy'
 									className='w-full h-full'
