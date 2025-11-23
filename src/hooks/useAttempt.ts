@@ -68,6 +68,7 @@ export function useSubmitAnswer() {
 
 export function useSubmitAttempt() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (attemptId: string) => {
@@ -78,6 +79,9 @@ export function useSubmitAttempt() {
     },
     onSuccess: (data) => {
       console.log('Submit successful, navigating to results:', data.slug);
+      // Invalidate results cache so dashboard stats update
+      queryClient.invalidateQueries({ queryKey: ['my-results'] });
+      queryClient.invalidateQueries({ queryKey: ['my-attempts'] });
       toast.success('Quiz submitted successfully!');
       navigate(`/results/${data.slug}`);
     },

@@ -25,9 +25,12 @@ export interface Question {
 export interface Result {
   _id: string;
   slug: string;
-  quizId?: {
+  quizId?: string | {
+    _id: string;
+    slug: string;
     topic: string;
   };
+  quizSlug?: string;
   quizTopic: string;
   quizDifficulty: 'easy' | 'medium' | 'hard';
   score: number;
