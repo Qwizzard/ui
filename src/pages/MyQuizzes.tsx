@@ -13,6 +13,7 @@ import {
 	useDeleteQuiz,
 	useToggleQuizVisibility,
 } from '../hooks/useQuiz'
+import { useLatestQuizResult } from '../hooks/useResult'
 import { useStartAttempt, useQuizAttemptStatus } from '../hooks/useAttempt'
 import { Skeleton } from '../components/ui/skeleton'
 import type { Quiz } from '../types'
@@ -27,6 +28,7 @@ import {
 	Calendar,
 	PlusCircle,
 	Sparkles,
+	Trophy,
 } from 'lucide-react'
 import { cn } from '../lib/utils'
 
@@ -35,6 +37,7 @@ function MyQuizCard({ quiz, index }: { quiz: Quiz; index: number }) {
 	const { mutate: toggleVisibility } = useToggleQuizVisibility()
 	const { mutate: startAttempt, isPending } = useStartAttempt()
 	const { data: attemptStatus } = useQuizAttemptStatus(quiz.slug)
+	const { data: latestResult } = useLatestQuizResult(quiz.slug)
 	const navigate = useNavigate()
 
 	const handleTakeQuiz = () => {
@@ -65,19 +68,29 @@ function MyQuizCard({ quiz, index }: { quiz: Quiz; index: number }) {
 		}
 	}
 
+	const isAdaptive = !!quiz.parentQuizId;
+
 	return (
 		<motion.div
 			initial={{ opacity: 0, y: 20 }}
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ delay: index * 0.05 }}
 		>
-			<Card className='card-hover h-full border-2 group'>
+			<Card className={cn('card-hover h-full border-2 group', isAdaptive && 'adaptive-quiz-card')}>
 				<CardHeader>
 					<div className='flex items-start justify-between gap-4'>
 						<div className='flex-1 space-y-2'>
-							<CardTitle className='text-xl group-hover:text-primary transition-colors'>
-								{quiz.topic}
-							</CardTitle>
+							<div className="flex items-center gap-2">
+								<CardTitle className='text-xl group-hover:text-primary transition-colors'>
+									{quiz.topic}
+								</CardTitle>
+								{isAdaptive && (
+									<Badge variant="outline" className="adaptive-badge gap-1 text-xs">
+										<Sparkles className="h-3 w-3" />
+										Adaptive
+									</Badge>
+								)}
+							</div>
 							<CardDescription className='flex items-center gap-2'>
 								<Calendar className='h-3 w-3' />
 								Created {new Date(quiz.createdAt).toLocaleDateString()}
@@ -129,15 +142,27 @@ function MyQuizCard({ quiz, index }: { quiz: Quiz; index: number }) {
 					)}
 
 					<div className='flex flex-wrap gap-2'>
-						<Button
-							onClick={handleTakeQuiz}
-							disabled={isPending}
-							size='sm'
-							className='flex-1 min-w-[100px]'
-						>
-							<Play className='mr-2 h-4 w-4' />
-							{getTakeQuizButtonText()}
-						</Button>
+						{latestResult ? (
+							<Link to={`/results/${latestResult.slug}`} className='flex-1 min-w-[100px]'>
+								<Button
+									size='sm'
+									className='w-full'
+								>
+									<Trophy className='mr-2 h-4 w-4' />
+									View Result
+								</Button>
+							</Link>
+						) : (
+							<Button
+								onClick={handleTakeQuiz}
+								disabled={isPending}
+								size='sm'
+								className='flex-1 min-w-[100px]'
+							>
+								<Play className='mr-2 h-4 w-4' />
+								{getTakeQuizButtonText()}
+							</Button>
+						)}
 						<Link to={`/quizzes/${quiz.slug}`}>
 							<Button variant='outline' size='sm'>
 								<Eye className='mr-2 h-4 w-4' />
@@ -190,6 +215,9 @@ function MyQuizCard({ quiz, index }: { quiz: Quiz; index: number }) {
 export function MyQuizzes() {
 	const { data: quizzes, isLoading } = useMyQuizzes()
 
+	// Filter out adaptive quizzes - only show original quizzes created by user
+	const originalQuizzes = quizzes?.filter((quiz: Quiz) => !quiz.parentQuizId) || []
+
 	if (isLoading) {
 		return (
 			<div className='space-y-6'>
@@ -235,7 +263,7 @@ export function MyQuizzes() {
 			</div>
 
 			{/* Stats */}
-			{quizzes && quizzes.length > 0 && (
+			{originalQuizzes && originalQuizzes.length > 0 && (
 				<div className='grid grid-cols-1 sm:grid-cols-3 gap-4'>
 					<Card className='border-2 card-hover'>
 						<CardContent className='pt-6'>
@@ -245,7 +273,7 @@ export function MyQuizzes() {
 								</div>
 								<div>
 									<p className='text-3xl font-bold text-primary'>
-										{quizzes.length}
+										{originalQuizzes.length}
 									</p>
 									<p className='text-sm text-muted-foreground'>Total Quizzes</p>
 								</div>
@@ -261,7 +289,7 @@ export function MyQuizzes() {
 								</div>
 								<div>
 									<p className='text-3xl font-bold text-green-600 dark:text-green-400'>
-										{quizzes.filter((q: Quiz) => q.isPublic).length}
+										{originalQuizzes.filter((q: Quiz) => q.isPublic).length}
 									</p>
 									<p className='text-sm text-muted-foreground'>Public</p>
 								</div>
@@ -277,7 +305,7 @@ export function MyQuizzes() {
 								</div>
 								<div>
 									<p className='text-3xl font-bold text-secondary'>
-										{quizzes.filter((q: Quiz) => !q.isPublic).length}
+										{originalQuizzes.filter((q: Quiz) => !q.isPublic).length}
 									</p>
 									<p className='text-sm text-muted-foreground'>Private</p>
 								</div>
@@ -288,7 +316,7 @@ export function MyQuizzes() {
 			)}
 
 			{/* Quiz Grid */}
-			{!quizzes || quizzes.length === 0 ? (
+			{!originalQuizzes || originalQuizzes.length === 0 ? (
 				<Card className='border-2'>
 					<CardContent className='py-16 text-center space-y-4'>
 						<div className='mx-auto w-16 h-16 bg-muted rounded-full flex items-center justify-center'>
@@ -310,7 +338,7 @@ export function MyQuizzes() {
 				</Card>
 			) : (
 				<div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
-					{quizzes.map((quiz: Quiz, index: number) => (
+					{originalQuizzes.map((quiz: Quiz, index: number) => (
 						<MyQuizCard key={quiz._id} quiz={quiz} index={index} />
 					))}
 				</div>

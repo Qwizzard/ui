@@ -3,6 +3,7 @@ import { Button } from '../components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Badge } from '../components/ui/badge'
 import { useResult, useToggleResultVisibility } from '../hooks/useResult'
+import { useQuiz } from '../hooks/useQuiz'
 import { Skeleton } from '../components/ui/skeleton'
 import {
 	CheckCircle2,
@@ -25,6 +26,8 @@ import {
 	ScaleIn,
 } from '../components/animations/MotionComponents'
 import { LottieAnimation } from '../components/animations/LottieAnimation'
+import { AdaptiveQuizDialog } from '../components/AdaptiveQuizDialog'
+import { AdaptiveQuizTimeline } from '../components/AdaptiveQuizTimeline'
 import { cn } from '../lib/utils'
 import { useEffect, useState } from 'react'
 
@@ -35,6 +38,14 @@ export function QuizResults() {
 	const { mutate: toggleVisibility, isPending: isTogglingVisibility } =
 		useToggleResultVisibility()
 	const [showConfetti, setShowConfetti] = useState(false)
+	const [showAdaptiveDialog, setShowAdaptiveDialog] = useState(false)
+
+	// Fetch quiz data to check if it's adaptive
+	const quizSlug = result && typeof result.quizId === 'object' && result.quizId?.slug
+		? result.quizId.slug
+		: result?.quizSlug || (typeof result?.quizId === 'string' ? result.quizId : '')
+	const { data: quiz } = useQuiz(quizSlug as string)
+	const isAdaptiveQuiz = quiz?.parentQuizId ? true : false
 
 	const isOwner = result && user && String(result.userId) === String(user.id)
 
@@ -312,27 +323,67 @@ export function QuizResults() {
 			{/* Actions */}
 			<SlideIn direction='up' delay={1.2}>
 				<div className='flex flex-wrap gap-3'>
-					<Link to='/quizzes/public' className='flex-1 min-w-[200px]'>
-						<Button variant='outline' className='w-full'>
+					{user && (
+						<Button
+							variant='default'
+							className='flex-1 min-w-[200px]'
+							onClick={() => {
+								// Validate result has required data
+								if (!result.slug) {
+									toast.error(
+										'Cannot generate adaptive quiz: Invalid result data'
+									)
+									return
+								}
+								setShowAdaptiveDialog(true)
+							}}
+						>
 							<Trophy className='mr-2 h-4 w-4' />
 							Try Another Quiz
 						</Button>
-					</Link>
-					<Link
-						to={`/quizzes/${
-							typeof result.quizId === 'object' && result.quizId?.slug
-								? result.quizId.slug
-								: result.quizSlug || result.quizId
-						}`}
-						className='flex-1 min-w-[200px]'
-					>
-						<Button variant='outline' className='w-full'>
-							<RotateCcw className='mr-2 h-4 w-4' />
-							Retake Quiz
-						</Button>
-					</Link>
+					)}
+					{!user && (
+						<Link to='/quizzes/public' className='flex-1 min-w-[200px]'>
+							<Button variant='default' className='w-full'>
+								<Trophy className='mr-2 h-4 w-4' />
+								Try Another Quiz
+							</Button>
+						</Link>
+					)}
+					{!isAdaptiveQuiz ? (
+						<Link
+							to={`/quizzes/${
+								typeof result.quizId === 'object' && result.quizId?.slug
+									? result.quizId.slug
+									: result.quizSlug || result.quizId
+							}`}
+							className='flex-1 min-w-[200px]'
+						>
+							<Button variant='outline' className='w-full'>
+								<RotateCcw className='mr-2 h-4 w-4' />
+								Retake Quiz
+							</Button>
+						</Link>
+					) : (
+						<div className='flex-1 min-w-[200px]'>
+							<div className='p-4 border-2 border-dashed rounded-lg text-center bg-muted/30'>
+								<p className='text-sm text-muted-foreground'>
+									This adaptive quiz was generated specifically for you and cannot be retaken
+								</p>
+							</div>
+						</div>
+					)}
 				</div>
 			</SlideIn>
+
+			{/* Adaptive Quiz Dialog */}
+			{user && result && (
+				<AdaptiveQuizDialog
+					open={showAdaptiveDialog}
+					onOpenChange={setShowAdaptiveDialog}
+					result={result}
+				/>
+			)}
 
 			{/* Detailed Breakdown */}
 			<div className='space-y-4'>
@@ -446,6 +497,11 @@ export function QuizResults() {
 					</motion.div>
 				))}
 			</div>
+
+			{/* Adaptive Quiz Timeline - Only show for original quizzes */}
+			{result && typeof result.quizId === 'object' && result.quizId?.slug && user && isOwner && !isAdaptiveQuiz && (
+				<AdaptiveQuizTimeline parentQuizSlug={result.quizId.slug} />
+			)}
 		</div>
 	)
 }

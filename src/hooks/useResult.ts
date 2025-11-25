@@ -59,3 +59,26 @@ export function useToggleResultVisibility() {
   });
 }
 
+export function useGroupedResults() {
+  return useQuery({
+    queryKey: ['grouped-results'],
+    queryFn: async () => {
+      const response = await axios.get('/results/grouped');
+      return response.data;
+    },
+  });
+}
+
+export function useLatestQuizResult(quizSlug: string) {
+  return useQuery({
+    queryKey: ['latest-result', quizSlug],
+    queryFn: async () => {
+      const response = await axios.get(`/results/quiz/${quizSlug}`);
+      // Return the most recent result (should already be sorted by backend)
+      const results = response.data;
+      return results && results.length > 0 ? results[0] : null;
+    },
+    enabled: !!quizSlug,
+  });
+}
+

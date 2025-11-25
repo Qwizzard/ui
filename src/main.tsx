@@ -8,18 +8,27 @@ import { queryClient } from './lib/queryClient'
 import { AuthProvider } from './contexts/AuthContext'
 import { ThemeProvider } from './contexts/ThemeContext'
 import { StrictMode } from 'react'
+import posthog from 'posthog-js'
+import { PostHogProvider } from '@posthog/react'
+
+posthog.init(import.meta.env.VITE_PUBLIC_POSTHOG_KEY, {
+	api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
+	defaults: '2025-05-24',
+})
 
 createRoot(document.getElementById('root')!).render(
 	<StrictMode>
-		<ThemeProvider>
-			<BrowserRouter>
-				<QueryClientProvider client={queryClient}>
-					<AuthProvider>
-						<App />
-						<Toaster position='top-right' richColors />
-					</AuthProvider>
-				</QueryClientProvider>
-			</BrowserRouter>
-		</ThemeProvider>
+		<PostHogProvider client={posthog}>
+			<ThemeProvider>
+				<BrowserRouter>
+					<QueryClientProvider client={queryClient}>
+						<AuthProvider>
+							<App />
+							<Toaster position='top-right' richColors />
+						</AuthProvider>
+					</QueryClientProvider>
+				</BrowserRouter>
+			</ThemeProvider>
+		</PostHogProvider>
 	</StrictMode>
 )

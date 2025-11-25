@@ -6,6 +6,7 @@ import { Badge } from '../components/ui/badge';
 import { Input } from '../components/ui/input';
 import { usePublicQuizzes } from '../hooks/useQuiz';
 import { useStartAttempt, useQuizAttemptStatus } from '../hooks/useAttempt';
+import { useAuth } from '../contexts/AuthContext';
 import { Skeleton } from '../components/ui/skeleton';
 import { Search, Play, Eye, BookOpen, User, Calendar, Sparkles } from 'lucide-react';
 import type { Quiz } from '../types';
@@ -14,11 +15,19 @@ import { FadeIn, SlideIn } from '../components/animations/MotionComponents';
 import { cn } from '../lib/utils';
 
 function QuizCard({ quiz, index }: { quiz: Quiz; index: number }) {
+  const { user } = useAuth();
   const { mutate: startAttempt, isPending } = useStartAttempt();
   const { data: attemptStatus } = useQuizAttemptStatus(quiz.slug);
   const navigate = useNavigate();
 
   const handleAction = () => {
+    // Check if user is authenticated
+    if (!user) {
+      // Redirect to login with return URL
+      navigate(`/login?returnTo=/quizzes/${quiz.slug}`);
+      return;
+    }
+
     if (attemptStatus?.status === 'in-progress' && attemptStatus.attemptId) {
       navigate(`/attempt/${attemptStatus.attemptId}`);
     } else {

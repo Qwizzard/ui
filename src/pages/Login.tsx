@@ -58,7 +58,7 @@ export function Login() {
           <div className="space-y-4">
             <h1 className="text-5xl font-bold">
               Welcome Back to
-              <span className="gradient-text block mt-2">Quiz-Me</span>
+              <span className="gradient-text block mt-2">Qwizzard</span>
             </h1>
             <p className="text-xl text-muted-foreground">
               Continue your learning journey and test your knowledge

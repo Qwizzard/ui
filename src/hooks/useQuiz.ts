@@ -15,6 +15,12 @@ interface GenerateQuizData {
   numberOfQuestions: number;
 }
 
+interface GenerateAdaptiveQuizData {
+  resultSlug: string;
+  focusOnWeakAreas: boolean;
+  useHarderDifficulty: boolean;
+}
+
 export function useGenerateQuiz() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -32,6 +38,30 @@ export function useGenerateQuiz() {
     onError: (error: unknown) => {
       const axiosError = error as AxiosError<ErrorResponse>;
       toast.error(axiosError.response?.data?.message || 'Failed to generate quiz');
+    },
+  });
+}
+
+export function useGenerateAdaptiveQuiz() {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: GenerateAdaptiveQuizData) => {
+      const response = await axios.post('/quizzes/adaptive', data);
+      return response.data;
+    },
+    onSuccess: (quiz) => {
+      queryClient.invalidateQueries({ queryKey: ['my-quizzes'] });
+      toast.success('Adaptive quiz generated successfully!');
+      // Navigate to the new quiz
+      navigate(`/quizzes/${quiz.slug}`);
+    },
+    onError: (error: unknown) => {
+      const axiosError = error as AxiosError<ErrorResponse>;
+      toast.error(
+        axiosError.response?.data?.message || 'Failed to generate adaptive quiz',
+      );
     },
   });
 }
@@ -102,6 +132,28 @@ export function useToggleQuizVisibility() {
       const axiosError = error as AxiosError<ErrorResponse>;
       toast.error(axiosError.response?.data?.message || 'Failed to update visibility');
     },
+  });
+}
+
+export function useHasCompletedQuiz(quizId: string) {
+  return useQuery({
+    queryKey: ['has-completed', quizId],
+    queryFn: async () => {
+      const response = await axios.get(`/quizzes/${quizId}/has-completed`);
+      return response.data;
+    },
+    enabled: !!quizId,
+  });
+}
+
+export function useAdaptiveQuizzes(parentQuizSlug: string) {
+  return useQuery({
+    queryKey: ['adaptive-quizzes', parentQuizSlug],
+    queryFn: async () => {
+      const response = await axios.get(`/quizzes/${parentQuizSlug}/adaptive-children`);
+      return response.data;
+    },
+    enabled: !!parentQuizSlug,
   });
 }
 

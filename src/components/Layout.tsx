@@ -28,7 +28,6 @@ export function Layout() {
     { to: '/dashboard', label: 'Dashboard', icon: Home, auth: true },
     { to: '/quizzes/create', label: 'Create Quiz', icon: PlusCircle, auth: true },
     { to: '/quizzes/my-quizzes', label: 'My Quizzes', icon: BookOpen, auth: true },
-    { to: '/quizzes/public', label: 'Browse Quizzes', icon: Trophy, auth: false },
   ];
 
   const isActive = (path: string) => {
@@ -60,7 +59,7 @@ export function Layout() {
               >
                 <Brain className="h-6 w-6 text-primary" />
               </motion.div>
-              <span className="text-2xl font-bold gradient-text">Quiz-Me</span>
+              <span className="text-2xl font-bold gradient-text">Qwizzard</span>
             </Link>
             
             {/* Desktop Navigation */}
@@ -218,10 +217,10 @@ export function Layout() {
               <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
                 <Brain className="h-5 w-5 text-primary" />
               </div>
-              <span className="font-bold gradient-text">Quiz-Me</span>
+              <span className="font-bold gradient-text">Qwizzard</span>
             </div>
             <p className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} Quiz-Me. All rights reserved.
+              © {new Date().getFullYear()} Qwizzard. All rights reserved.
             </p>
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <Link to="/" className="hover:text-primary transition-colors">

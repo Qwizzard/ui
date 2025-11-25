@@ -12,6 +12,10 @@ export interface Quiz {
   };
   isOwner?: boolean;
   questions?: Question[];
+  parentQuizId?: string;
+  sourceResultId?: string;
+  generationType?: string;
+  hasCompletedQuiz?: boolean;
 }
 
 export interface Question {
@@ -49,5 +53,28 @@ export interface ResultAnswer {
   correctAnswers: number[];
   isCorrect: boolean;
   explanation: string;
+}
+
+export interface AdaptiveQuizChild {
+  _id: string;
+  slug: string;
+  topic: string;
+  difficulty: 'easy' | 'medium' | 'hard';
+  generationType: string;
+  createdAt: string;
+  sourceResult?: {
+    score: number;
+    totalQuestions: number;
+    percentage: number;
+    completedAt: string;
+  };
+  completionResult?: {
+    score: number;
+    totalQuestions: number;
+    percentage: number;
+    completedAt: string;
+    slug: string;
+  } | null;
+  attemptCount: number;
 }
 

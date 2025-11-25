@@ -384,7 +384,7 @@ export function Home() {
 								Ready to Start Your Learning Journey?
 							</h2>
 							<p className='text-xl text-muted-foreground max-w-2xl mx-auto'>
-								Join thousands of learners and educators already using Quiz-Me
+								Join thousands of learners and educators already using Qwizzard
 							</p>
 							<div className='flex flex-wrap justify-center gap-4 pt-4'>
 								<Link to='/register'>

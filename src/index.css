@@ -41,6 +41,21 @@
 	--color-sidebar-ring: var(--sidebar-ring);
 }
 
+.adaptive-quiz-card {
+	border-color: hsl(var(--adaptive-primary) / 0.3) !important;
+}
+
+.adaptive-quiz-card:hover {
+	border-color: hsl(var(--adaptive-primary) / 0.5) !important;
+	box-shadow: 0 4px 6px -1px hsl(var(--adaptive-primary) / 0.1);
+}
+
+.adaptive-badge {
+	background-color: hsl(var(--adaptive-primary) / 0.1);
+	color: hsl(var(--adaptive-primary));
+	border-color: hsl(var(--adaptive-primary) / 0.3);
+}
+
 @layer base {
 	* {
 		@apply border-border outline-ring/50;
@@ -229,6 +244,10 @@
 	/* Warning colors for quiz feedback */
 	--warning: oklch(0.75 0.15 85);
 	--warning-foreground: oklch(0.15 0.01 85);
+
+	/* Adaptive quiz styling with slightly different shade */
+	--adaptive-primary: 262 80% 48%;
+	--adaptive-primary-foreground: 210 40% 98%;
 }
 
 .dark {
@@ -271,4 +290,8 @@
 	/* Warning colors for dark mode */
 	--warning: oklch(0.78 0.12 85);
 	--warning-foreground: oklch(0.15 0.01 85);
+
+	/* Adaptive quiz styling for dark mode */
+	--adaptive-primary: 262 80% 55%;
+	--adaptive-primary-foreground: 210 40% 98%;
 }

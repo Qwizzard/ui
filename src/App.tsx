@@ -23,6 +23,7 @@ const PublicQuizzes = lazy(() => import('./pages/PublicQuizzes').then(m => ({ de
 const TakeQuiz = lazy(() => import('./pages/TakeQuiz').then(m => ({ default: m.TakeQuiz })))
 const QuizResults = lazy(() => import('./pages/QuizResults').then(m => ({ default: m.QuizResults })))
 const QuizDetail = lazy(() => import('./pages/QuizDetail').then(m => ({ default: m.QuizDetail })))
+const AllResults = lazy(() => import('./pages/AllResults').then(m => ({ default: m.AllResults })))
 
 function App() {
 	const { isAuthenticated } = useAuth()
@@ -59,6 +60,14 @@ function App() {
 						element={
 							<ProtectedRoute>
 								<Dashboard />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path='results'
+						element={
+							<ProtectedRoute>
+								<AllResults />
 							</ProtectedRoute>
 						}
 					/>

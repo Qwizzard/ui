@@ -184,202 +184,101 @@ export function Dashboard() {
 				</SlideIn>
 			</div>
 
-			<div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
-				{/* Quick Actions */}
-				<ScaleIn delay={0.4}>
-					<Card className='border-2 h-[500px] flex flex-col'>
-						<CardHeader>
-							<div className='flex items-center gap-2'>
-								<div className='w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center'>
-									<Sparkles className='h-4 w-4 text-primary' />
-								</div>
-								<CardTitle>Quick Actions</CardTitle>
+		<div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
+			{/* Recent Results */}
+			<ScaleIn delay={0.4}>
+				<Card className='border-2 h-[500px] flex flex-col'>
+					<CardHeader>
+						<div className="flex items-center justify-between">
+							<div>
+								<CardTitle>Recent Results</CardTitle>
+								<CardDescription>Your latest quiz attempts</CardDescription>
 							</div>
-							<CardDescription>Start your learning journey</CardDescription>
-						</CardHeader>
-						<CardContent className='space-y-3 flex-1 overflow-y-auto'>
-							<Link to='/quizzes/create' className='block'>
-								<Button
-									className='w-full justify-start h-auto py-4 group'
-									variant='outline'
-								>
-									<div className='flex items-center gap-3 flex-1 text-left'>
-										<div className='w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center shrink-0'>
-											<PlusCircle className='h-5 w-5 text-primary' />
-										</div>
-										<div className='flex-1'>
-											<div className='font-semibold'>Create New Quiz</div>
-											<div className='text-xs text-muted-foreground'>
-												Generate with AI or create manually
-											</div>
-										</div>
-										<ArrowRight className='h-4 w-4 group-hover:translate-x-1 transition-transform' />
-									</div>
-								</Button>
-							</Link>
-							<Link to='/quizzes/public' className='block'>
-								<Button
-									className='w-full justify-start h-auto py-4 group'
-									variant='outline'
-								>
-									<div className='flex items-center gap-3 flex-1 text-left'>
-										<div className='w-10 h-10 bg-secondary/10 rounded-lg flex items-center justify-center shrink-0'>
-											<BookOpen className='h-5 w-5 text-secondary' />
-										</div>
-										<div className='flex-1'>
-											<div className='font-semibold'>Browse Public Quizzes</div>
-											<div className='text-xs text-muted-foreground'>
-												Discover quizzes from the community
-											</div>
-										</div>
-										<ArrowRight className='h-4 w-4 group-hover:translate-x-1 transition-transform' />
-									</div>
-								</Button>
-							</Link>
-							<Link to='/quizzes/my-quizzes' className='block'>
-								<Button
-									className='w-full justify-start h-auto py-4 group'
-									variant='outline'
-								>
-									<div className='flex items-center gap-3 flex-1 text-left'>
-										<div className='w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center shrink-0'>
-											<Trophy className='h-5 w-5 text-primary' />
-										</div>
-										<div className='flex-1'>
-											<div className='font-semibold'>View My Quizzes</div>
-											<div className='text-xs text-muted-foreground'>
-												Manage your created quizzes
-											</div>
-										</div>
-										<ArrowRight className='h-4 w-4 group-hover:translate-x-1 transition-transform' />
-									</div>
-								</Button>
-							</Link>
-							<Link to='/dashboard' className='block'>
-								<Button
-									className='w-full justify-start h-auto py-4 group'
-									variant='outline'
-								>
-									<div className='flex items-center gap-3 flex-1 text-left'>
-										<div className='w-10 h-10 bg-green-500/10 rounded-lg flex items-center justify-center shrink-0'>
-											<TrendingUp className='h-5 w-5 text-green-600' />
-										</div>
-										<div className='flex-1'>
-											<div className='font-semibold'>View Analytics</div>
-											<div className='text-xs text-muted-foreground'>
-												Track your learning progress
-											</div>
-										</div>
-										<ArrowRight className='h-4 w-4 group-hover:translate-x-1 transition-transform' />
-									</div>
-								</Button>
-							</Link>
-							<Link to='/quizzes/my-quizzes' className='block'>
-								<Button
-									className='w-full justify-start h-auto py-4 group'
-									variant='outline'
-								>
-									<div className='flex items-center gap-3 flex-1 text-left'>
-										<div className='w-10 h-10 bg-purple-500/10 rounded-lg flex items-center justify-center shrink-0'>
-											<History className='h-5 w-5 text-purple-600' />
-										</div>
-										<div className='flex-1'>
-											<div className='font-semibold'>Quiz History</div>
-											<div className='text-xs text-muted-foreground'>
-												View all your past attempts
-											</div>
-										</div>
-										<ArrowRight className='h-4 w-4 group-hover:translate-x-1 transition-transform' />
-									</div>
-								</Button>
-							</Link>
-						</CardContent>
-					</Card>
-				</ScaleIn>
-
-				{/* Recent Results */}
-				<ScaleIn delay={0.5}>
-					<Card className='border-2 h-[500px] flex flex-col'>
-						<CardHeader>
-							<CardTitle>Recent Results</CardTitle>
-							<CardDescription>Your latest quiz attempts</CardDescription>
-						</CardHeader>
-						<CardContent className='flex-1 overflow-y-auto'>
-							{resultsLoading ? (
-								<div className='space-y-3'>
-									{[1, 2, 3].map((i) => (
-										<Skeleton key={i} className='h-20 w-full' />
-									))}
-								</div>
-							) : !results || results.length === 0 ? (
-								<div className='text-center py-8 space-y-4'>
-									<div className='mx-auto w-24 h-24'>
-										<LottieAnimation
-											animationType='emptyResults'
-											className='w-full h-full'
-										/>
-									</div>
-									<div>
-										<p className='font-medium mb-1'>No attempts yet</p>
-										<p className='text-sm text-muted-foreground'>
-											Start taking quizzes to see your results here
-										</p>
-									</div>
-									<Link to='/quizzes/public'>
-										<Button variant='outline'>Browse Quizzes</Button>
-									</Link>
-								</div>
-							) : (
-								<div className='space-y-3'>
-									{results.slice(0, 5).map((result: Result, idx: number) => (
-										<motion.div
-											key={result._id}
-											initial={{ opacity: 0, x: -20 }}
-											animate={{ opacity: 1, x: 0 }}
-											transition={{ delay: idx * 0.1 }}
-										>
-											<Link to={`/results/${result.slug}`} className='block'>
-												<div className='flex items-center justify-between p-4 rounded-lg border-2 hover:border-primary hover:bg-primary/5 transition-all group'>
-													<div className='flex-1'>
-														<p className='font-semibold group-hover:text-primary transition-colors'>
-															{result.quizTopic}
-														</p>
-														<p className='text-xs text-muted-foreground mt-1'>
-															{new Date(result.completedAt).toLocaleDateString(
-																'en-US',
-																{
-																	month: 'short',
-																	day: 'numeric',
-																	year: 'numeric',
-																}
-															)}
-														</p>
-													</div>
-													<Badge
-														className={
-															result.percentage >= 80
-																? 'bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20'
-																: result.percentage >= 60
-																? 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20'
-																: 'bg-orange-500/10 text-orange-700 dark:text-orange-400 border-orange-500/20'
-														}
-													>
-														{result.percentage.toFixed(0)}%
-													</Badge>
-												</div>
-											</Link>
-										</motion.div>
-									))}
-								</div>
+							{results && results.length > 0 && (
+								<Link to='/results'>
+									<Button variant='outline' size='sm'>
+										See All
+										<ArrowRight className='ml-2 h-4 w-4' />
+									</Button>
+								</Link>
 							)}
-						</CardContent>
-					</Card>
-				</ScaleIn>
-			</div>
+						</div>
+					</CardHeader>
+					<CardContent className='flex-1 overflow-y-auto'>
+						{resultsLoading ? (
+							<div className='space-y-3'>
+								{[1, 2, 3].map((i) => (
+									<Skeleton key={i} className='h-20 w-full' />
+								))}
+							</div>
+						) : !results || results.length === 0 ? (
+							<div className='text-center py-8 space-y-4'>
+								<div className='mx-auto w-24 h-24'>
+									<LottieAnimation
+										animationType='emptyResults'
+										className='w-full h-full'
+									/>
+								</div>
+								<div>
+									<p className='font-medium mb-1'>No attempts yet</p>
+									<p className='text-sm text-muted-foreground'>
+										Start taking quizzes to see your results here
+									</p>
+								</div>
+								<Link to='/quizzes/public'>
+									<Button variant='outline'>Browse Quizzes</Button>
+								</Link>
+							</div>
+						) : (
+							<div className='space-y-3'>
+								{results.slice(0, 5).map((result: Result, idx: number) => (
+									<motion.div
+										key={result._id}
+										initial={{ opacity: 0, x: -20 }}
+										animate={{ opacity: 1, x: 0 }}
+										transition={{ delay: idx * 0.1 }}
+									>
+										<Link to={`/results/${result.slug}`} className='block'>
+											<div className='flex items-center justify-between p-4 rounded-lg border-2 hover:border-primary hover:bg-primary/5 transition-all group'>
+												<div className='flex-1'>
+													<p className='font-semibold group-hover:text-primary transition-colors'>
+														{result.quizTopic}
+													</p>
+													<p className='text-xs text-muted-foreground mt-1'>
+														{new Date(result.completedAt).toLocaleDateString(
+															'en-US',
+															{
+																month: 'short',
+																day: 'numeric',
+																year: 'numeric',
+															}
+														)}
+													</p>
+												</div>
+												<Badge
+													className={
+														result.percentage >= 80
+															? 'bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20'
+															: result.percentage >= 60
+															? 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20'
+															: 'bg-orange-500/10 text-orange-700 dark:text-orange-400 border-orange-500/20'
+													}
+												>
+													{result.percentage.toFixed(0)}%
+												</Badge>
+											</div>
+										</Link>
+									</motion.div>
+								))}
+							</div>
+						)}
+					</CardContent>
+				</Card>
+			</ScaleIn>
 
 			{/* Your Quizzes */}
-			<ScaleIn delay={0.6}>
-				<Card className='border-2'>
+			<ScaleIn delay={0.5}>
+				<Card className='border-2 h-[500px] flex flex-col'>
 					<CardHeader>
 						<div className='flex items-center justify-between'>
 							<div>
@@ -396,7 +295,7 @@ export function Dashboard() {
 							)}
 						</div>
 					</CardHeader>
-					<CardContent>
+					<CardContent className='flex-1 overflow-y-auto'>
 						{quizzesLoading ? (
 							<div className='space-y-3'>
 								{[1, 2].map((i) => (
@@ -404,7 +303,7 @@ export function Dashboard() {
 								))}
 							</div>
 						) : !quizzes || quizzes.length === 0 ? (
-							<div className='text-center py-12 space-y-4'>
+							<div className='text-center py-8 space-y-4'>
 								<div className='mx-auto w-32 h-32'>
 									<LottieAnimation
 										animationType='emptyQuizzes'
@@ -425,7 +324,7 @@ export function Dashboard() {
 								</div>
 							</div>
 						) : (
-							<div className='grid gap-4 md:grid-cols-2'>
+							<div className='space-y-3'>
 								{quizzes.slice(0, 4).map((quiz: Quiz, idx: number) => (
 									<motion.div
 										key={quiz._id}
@@ -434,32 +333,28 @@ export function Dashboard() {
 										transition={{ delay: idx * 0.1 }}
 									>
 										<Link to={`/quizzes/${quiz.slug}`}>
-											<Card className='card-hover h-full border-2'>
-												<CardHeader className='pb-3'>
-													<div className='flex items-start justify-between gap-2'>
-														<CardTitle className='text-lg line-clamp-2'>
-															{quiz.topic}
-														</CardTitle>
+											<div className='flex items-start justify-between p-4 rounded-lg border-2 hover:border-primary hover:bg-primary/5 transition-all group'>
+												<div className='flex-1 min-w-0'>
+													<p className='font-semibold group-hover:text-primary transition-colors line-clamp-2'>
+														{quiz.topic}
+													</p>
+													<div className='flex items-center gap-2 mt-2 flex-wrap'>
 														<Badge
 															variant={quiz.isPublic ? 'default' : 'secondary'}
-															className='shrink-0'
+															className='text-xs'
 														>
 															{quiz.isPublic ? 'Public' : 'Private'}
 														</Badge>
-													</div>
-												</CardHeader>
-												<CardContent>
-													<div className='flex items-center gap-4 text-sm text-muted-foreground'>
-														<div className='flex items-center gap-1'>
-															<BookOpen className='h-4 w-4' />
+														<div className='flex items-center gap-1 text-xs text-muted-foreground'>
+															<BookOpen className='h-3 w-3' />
 															{quiz.numberOfQuestions} questions
 														</div>
 														<Badge variant='outline' className='text-xs'>
 															{quiz.difficulty}
 														</Badge>
 													</div>
-												</CardContent>
-											</Card>
+												</div>
+											</div>
 										</Link>
 									</motion.div>
 								))}
@@ -468,6 +363,7 @@ export function Dashboard() {
 					</CardContent>
 				</Card>
 			</ScaleIn>
+		</div>
 		</div>
 	)
 }
