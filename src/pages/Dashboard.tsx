@@ -14,11 +14,9 @@ import { Skeleton } from '../components/ui/skeleton'
 import {
 	PlusCircle,
 	BookOpen,
-	Trophy,
 	TrendingUp,
 	Sparkles,
 	ArrowRight,
-	History,
 } from 'lucide-react'
 import type { Quiz, Result } from '../types'
 import { SlideIn, ScaleIn } from '../components/animations/MotionComponents'

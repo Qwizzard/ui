@@ -5,7 +5,7 @@ import { ThemeToggle } from './ThemeToggle';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 import { useAuth } from '../contexts/AuthContext';
 import { useLogout } from '../hooks/useAuth';
-import { Menu, Brain, Home, PlusCircle, BookOpen, Trophy, LogOut, User } from 'lucide-react';
+import { Menu, Brain, Home, PlusCircle, BookOpen, LogOut, User } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '../lib/utils';
 

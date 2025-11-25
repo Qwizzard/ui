@@ -20,7 +20,6 @@ import {
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { cn } from '../lib/utils'
-import type { Result } from '../types'
 
 export function AllResults() {
 	const { data: groupedResults, isLoading } = useGroupedResults()
